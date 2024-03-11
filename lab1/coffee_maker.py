@@ -33,89 +33,61 @@ as value
 # Commands
 EXIT = "exit"
 LIST_COFFEES = "list"
-MAKE_COFFEE = "make"  #!!! when making coffee you must first check that you have enough resources!
+MAKE_COFFEE = "make"
 HELP = "help"
 REFILL = "refill"
 RESOURCE_STATUS = "status"
 commands = [EXIT, LIST_COFFEES, MAKE_COFFEE, REFILL, RESOURCE_STATUS, HELP]
 
-# Coffee maker's resources - the values represent the fill percents
-
 coffee_cost = {}
 
 resources = {}
 
-"""
-Example result/interactions:
-
-I'm a smart coffee maker
-Enter command:
-list
-americano, cappuccino, espresso
-Enter command:
-status
-water: 100%
-coffee: 100%
-milk: 100%
-Enter command:
-make
-Which coffee?
-espresso
-Here's your espresso!
-Enter command:
-refill
-Which resource? Type 'all' for refilling everything
-water
-water: 100%
-coffee: 90%
-milk: 100%
-Enter command:
-exit
-"""
-
-def list_coffee():
+def _list_coffee():
     print(", ".join(coffee_cost.keys()))
 
-def resource_status():
-    print("\n".join(["%s: %s" % (k, v) for k, v in resources.items()]))
+def _resource_status():
+    print("\n".join([f"{k}: {v}" for k, v in resources.items()]))
 
-def refill_resource():
+def _refill_resource():
     print("Which resource? Type 'all' for refilling everything")
     resource = sys.stdin.readline().strip().lower()
-    
+
     if resource == "all":
         for k in resources:
             resources[k] = 100
+    elif resource not in resources:
+        print("Unknown resource")
     else:
         resources[resource] = 100
-    print("\n".join(["%s: %s" % (k, v) for k, v in resources.items()]))
+    print("\n".join([f"{k}: {v}" for k, v in resources.items()]))
 
-def command_make_coffee():
+def _command_make_coffee():
     print("Which coffee?")
     coffee = sys.stdin.readline().strip().lower()
-    
-    if (coffee not in coffee_cost):
+
+    if coffee not in coffee_cost:
         print("Unknown coffee type")
         return
-    
-    if (any(resources[k] < v for k, v in coffee_cost[coffee].items())):
+
+    if any(resources[k] < v for k, v in coffee_cost[coffee].items()):
         print("Not enough resources")
         return
-    
+
     for k, v in coffee_cost[coffee].items():
         resources[k] -= v
     
-    print("Here's your %s!" % coffee)
+    print(f"Here's your {coffee}!")
 
-def command_help():
+def _command_help():
     print("Available commands: %s" % ", ".join(commands))
 
 commands_map = {
-    LIST_COFFEES: list_coffee,
-    RESOURCE_STATUS: resource_status,
-    MAKE_COFFEE: command_make_coffee,
-    REFILL: refill_resource,
-    HELP: command_help
+    LIST_COFFEES: _list_coffee,
+    RESOURCE_STATUS: _resource_status,
+    MAKE_COFFEE: _command_make_coffee,
+    REFILL: _refill_resource,
+    HELP: _command_help
 }
 
 if __name__ == "__main__":
@@ -132,8 +104,7 @@ if __name__ == "__main__":
         if command == EXIT:
             print("Goodbye!")
             break
-        elif command in commands_map:
+        if command in commands_map:
             commands_map[command]()
         else:
             print("Unknown command. Type 'help' for available commands")
-
