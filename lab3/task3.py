@@ -6,8 +6,9 @@ Threadpool assignment:
 """
 from concurrent.futures import ThreadPoolExecutor as ThreadPool
 import random
+from os import urandom
 
-random.seed(0)
+random.seed(urandom(64))
 
 print("DNA search")
 

@@ -16,11 +16,8 @@ class Master(Thread):
             
             with self.work_signal:
             # notify worker
-                self.work_signal.notify()
-                self.work_signal.release()
-                
+                self.work_signal.notify()                
                 # get result
-                self.work_signal.acquire()
                 self.work_signal.wait()
                 if self.get_work() + 1 != self.worker.get_result():
                     print ("oops")
@@ -43,7 +40,6 @@ class Worker(Thread):
             # wait work
             with self.work_signal:
                 self.work_signal.wait()
-
                 if(terminate.is_set()): break
                 # generate result
                 self.result = self.master.get_work() + 1
