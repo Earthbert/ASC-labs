@@ -28,8 +28,8 @@ def search_dna_sequence(sequence : str, sample : str) -> bool:
 
 def thread_job(sample_index : int) -> tuple[bool, str]:
     if search_dna_sequence(SEARCH_SEQUENCE, dna_samples[sample_index]):
-        return True, f"DNA sequence found in sample {sample_index}"
-    return False, f"DNA sequence not found in sample {sample_index}"
+        return True, f'DNA sequence found in sample {sample_index}'
+    return False, f'DNA sequence not found in sample {sample_index}'
 
 
 if __name__ == "__main__":
@@ -43,4 +43,4 @@ if __name__ == "__main__":
             futures.append(thread_pool.submit(thread_job, i))
 
     result = [future.result() for future in futures if future.result()[0] == True]
-    print(result[0][1] if result else "DNA sequence not found in any sample")
+    print('\n'.join([r[1] for r in result]) if result else "DNA sequence not found in any sample")
