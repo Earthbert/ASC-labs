@@ -10,11 +10,10 @@
  * array will be now equal to 0 if it is an even number
  * or 1, if it is an odd number
  */
-__global__ void kernel_parity_id(int* a, int N) {
+__global__ void kernel_parity_id(int *a, int N) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i < N) {
         a[i] = i % 2;
-
     }
 }
 
@@ -24,7 +23,7 @@ __global__ void kernel_parity_id(int* a, int N) {
  * be equal to the BLOCK ID this computation takes
  * place.
  */
-__global__ void kernel_block_id(int* a, int N) {
+__global__ void kernel_block_id(int *a, int N) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i < N) {
         a[i] = blockIdx.x;
@@ -37,7 +36,7 @@ __global__ void kernel_block_id(int* a, int N) {
  * be equal to the THREAD ID this computation takes
  * place.
  */
-__global__ void kernel_thread_id(int* a, int N) {
+__global__ void kernel_thread_id(int *a, int N) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i < N) {
         a[i] = threadIdx.x;
@@ -91,20 +90,19 @@ int main(void) {
      * the device to the host; call cudaDeviceSynchronize()
      * after a kernel execution for safety purposes.
      */
-    int* host_array = (int*)malloc(N_BLOCKS * N_THREADS * sizeof(float));
+    int *host_array = (int *)malloc(N_BLOCKS * N_THREADS * sizeof(float));
     fill_array_int(host_array, N_BLOCKS * N_THREADS);
 
-    int* device_array;
+    int *device_array;
     cudaMalloc(&device_array, N_BLOCKS * N_THREADS * sizeof(int));
-    cudaMemcpy(device_array, device_array, N_BLOCKS * N_THREADS * sizeof(int), cudaMemcpyHostToDevice);
+    TRY_CUDA();
+    cudaMemcpy(device_array, host_array, N_BLOCKS * N_THREADS * sizeof(int), cudaMemcpyHostToDevice);
+    TRY_CUDA();
 
     kernel_parity_id << <N_BLOCKS, N_THREADS >> > (device_array, N_BLOCKS * N_THREADS);
-
+    TRY_CUDA();
     cudaMemcpy(host_array, device_array, N_BLOCKS * N_THREADS * sizeof(int), cudaMemcpyDeviceToHost);
-
-    for (int i = 0; i < N_BLOCKS * N_THREADS; i++) {
-        printf("%d ", host_array[i]);
-    }
+    TRY_CUDA();
 
     check_task_3(3, host_array);
 

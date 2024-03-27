@@ -38,8 +38,8 @@ int main(void) {
     cudaMalloc((int **)&device_array_c, BUF_2M * sizeof(int));
 
     // Check for allocation errors
-    if (host_array_a == 0 || host_array_b == 0 || 
-        device_array_a == 0 || device_array_b == 0 || 
+    if (host_array_a == 0 || host_array_b == 0 ||
+        device_array_a == 0 || device_array_b == 0 ||
         device_array_c == 0) {
         printf("[*] Error!\n");
         return 1;
@@ -66,7 +66,7 @@ int main(void) {
     int block_size = 256;
     int grid_size = (BUF_2M + block_size - 1) / block_size;
     for (int i = 0; i < BUF_32M; i += BUF_2M) {
-        swap_cuda<<<grid_size, block_size>>>(device_array_a + i, device_array_b + i, device_array_c, BUF_2M);
+        swap_cuda << <grid_size, block_size >> > (device_array_a + i, device_array_b + i, device_array_c, BUF_2M);
     }
 
     // TODO 5: Copy from device to host

@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define TRY_CUDA(err) { \
+#define TRY_CUDA() { \
+    cudaError_t err = cudaGetLastError(); \
     if (err != cudaSuccess) { \
         printf("CUDA Error: %s\n", cudaGetErrorString(err)); \
         exit(-1); \

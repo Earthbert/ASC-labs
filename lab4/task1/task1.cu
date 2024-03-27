@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cuda_bf16.h>
 
 __global__ void kernel_example(int value) {
 	/**
@@ -22,23 +23,23 @@ int main(void) {
 	printf("[HOST] Hello from the host!\n");
 
 	/**
-	 * Get the number of compute-capable devices. See more info 
+	 * Get the number of compute-capable devices. See more info
 	 * about this function in the Cuda Toolkit Documentation.
 	 */
 	cudaGetDeviceCount(&nDevices);
 	printf("[HOST] You have %d CUDA-capable GPU(s)\n", nDevices);
 
-	/** 
+	/**
 	 * Launching the above kernel with a single block, each block
 	 * with a single thread. The syncrhonize and the checking functions
 	 * assures that everything works as expected.
 	 */
-	kernel_example<<<1,1>>>(25);
+	kernel_example << <5, 5 >> > (25);
 	cudaDeviceSynchronize();
 
 	/**
 	 * Here we can also deallocate the allocated memory for the device
 	 */
-  	return 0;
+	return 0;
 }
 
