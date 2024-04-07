@@ -151,8 +151,10 @@ int main(void) {
 		std::cout << "Iteration " << i << ": " << time << "ms" << std::endl;
 		average_simple_time += time;
 
-		cudaMemcpy(host_out, device_c, sizeof(float) * n * n, cudaMemcpyDeviceToHost);
-		check_results(host_out, host_c, n);
+		if (CPU_ITERATIONS != 0) {
+			cudaMemcpy(host_out, device_c, sizeof(float) * n * n, cudaMemcpyDeviceToHost);
+			check_results(host_out, host_c, n);
+		}
 	}
 
 	average_simple_time /= GPU_ITERATIONS;
@@ -181,8 +183,10 @@ int main(void) {
 		std::cout << "Iteration " << i << ": " << time << "ms" << std::endl;
 		average_optimized_time += time;
 
-		cudaMemcpy(host_out, device_c, sizeof(float) * n * n, cudaMemcpyDeviceToHost);
-		check_results(host_out, host_c, n);
+		if (CPU_ITERATIONS != 0) {
+			cudaMemcpy(host_out, device_c, sizeof(float) * n * n, cudaMemcpyDeviceToHost);
+			check_results(host_out, host_c, n);
+		}
 	}
 
 	average_optimized_time /= GPU_ITERATIONS;
