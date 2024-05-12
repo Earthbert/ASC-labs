@@ -7,6 +7,7 @@
 #include <stdint.h>     // provides int8_t, uint8_t, int16_t etc.
 #include <stdlib.h>
 #include <sys/time.h>
+#include <time.h>
 
 #define N 1200
 double a[N][N], b[N][N], c[N][N];
